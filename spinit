@@ -1,0 +1,10 @@
+* For SPICE2 POLYs, edit the below line to point to the location 
+* of your codemodel.
+
+* codemodel C:/Spice/lib/ngspice/spice2poly.cm
+
+* The other codemodels
+* codemodel C:/Spice/lib/ngspice/analog.cm
+* codemodel C:/Spice/lib/ngspice/digital.cm
+* codemodel C:/Spice/lib/ngspice/xtradev.cm
+* codemodel C:/Spice/lib/ngspice/xtraevt.cm 

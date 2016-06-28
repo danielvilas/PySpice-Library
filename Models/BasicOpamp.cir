@@ -1,0 +1,27 @@
+* Basic Op from ecircuits
+* Description: Amplifier
+* END Notes
+*
+* Node Assignments
+*                       noninverting input
+*                       |   inverting input
+*                       |   |    positive supply
+*                       |   |    |   negative supply
+*                       |   |    |   |   output
+*                       |   |    |   |   |
+*                       |   |    |   |   |
+.SUBCKT BasicOpAmp      1   2   99  100  6
+RIN 1 2 10MEG
+* DC Gain = 100K And pole1 = 100Hz
+* Unitiy Gain = DCGAIN * POLE! = 100MHZ
+EGAIN 3 0 1 2 100K
+RP1 3 4 1K
+CP1 4 0 1.591uf
+EBUFFER 5 0 4 0 1
+ROUT 5 6 10
+.ENDS
+
+
+
+
+
