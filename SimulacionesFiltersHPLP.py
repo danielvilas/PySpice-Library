@@ -39,7 +39,7 @@ circuit.X('4',filter3.name,'In','out2','VRef','5V',circuit.gnd)
 print(circuit)
 
 simulator = circuit.simulator()
-enableLtSpice(simulator)
+enableLtSpice(simulator, spice_command='/Applications/LTspice.app/Contents/MacOS/LTspice')
 
 analysis = simulator.ac(start_frequency=10, stop_frequency=kilo(5), number_of_points=500,  variation='dec') 
 
