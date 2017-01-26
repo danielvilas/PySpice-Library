@@ -142,28 +142,36 @@ class LowPassFilterInverted(SubCircuitFactory):
         self.R('2','In','N002',self._R2)
         self.C('2','N002','N001',micro(10))
 
-class WideBandPassFilterInverted(SubCircuitFactory):
+class CascadeFilter(SubCircuitFactory):
     __nodes__ = ('In', 'Out', 'Ref', 'V+','V-')
-    _lp=None
-    _hp=None
+    _fa=None
+    _fb=None
 
     def attach(self, circuit):
         circuit.subcircuit(self)
-        circuit.subcircuit(self._lp)
-        circuit.subcircuit(self._hp)
-        
-    def __init__(self, opAmpModel=None, C=nano(100), Gain=1, Finf=50, Fsup=350, name = None):
+        circuit.subcircuit(self._fa)
+        circuit.subcircuit(self._fb)
+
+    def __init__(self, fa=None, fb=None, name=None):
         super().__init__()
+        self.name = name
+        
+        self._fa=fa
+        self._fb=fb
+        
+        self.X('1',self._fa.name,'In','N001','Ref','V+','V-')
+        self.X('2',self._fb.name,'N001','Out','Ref','V+','V-')
+
+class WideBandPassFilterInverted(CascadeFilter):
+    def __init__(self, opAmpModel=None, C=nano(100), Gain=1, Finf=50, Fsup=350, name = None):
 
         if opAmpModel == None:
             raise NotImplementedError("This Filters needs An Operational Model")
 
         if name == None:
             name = 'wbpfi_{}_{}_{}'.format(Finf,Fsup,Gain)
-        self.__name__= name
-        self.name = name
-        self._lp=LowPassFilterInverted(opAmpModel=opAmpModel,C=C,Gain=Gain,Fc=Fsup)
-        self._hp=HighPassFilterInverted(opAmpModel=opAmpModel,C=C,Gain=Gain,Fc=Finf)
-        self.X('1',self._hp.name,'In','N001','Ref','V+','V-')
-        self.X('2',self._lp.name,'N001','Out','Ref','V+','V-')
+        lp=LowPassFilterInverted(opAmpModel=opAmpModel,C=C,Gain=Gain,Fc=Fsup)
+        hp=HighPassFilterInverted(opAmpModel=opAmpModel,C=C,Gain=Gain,Fc=Finf)
+        super().__init__(fa=lp,fb=hp,name=name)
+
 

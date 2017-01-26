@@ -18,3 +18,13 @@ class Sonda(SubCircuitFactory):
         secondary_inductor = self.L('secondary', 'VSense', 'VRef', secondary_inductance)
         self.CoupledInductor('coupling', primary_inductor.name, secondary_inductor.name, coupling)
         self.R('shunt','VSense', 'VRef',RShunt)
+
+class VoltageReference(SubCircuitFactory):
+    __name__ = 'VoltageReference'
+    __nodes__ = ('Vin','Vref', 'Vgnd' )
+
+    def __init__ (self, opAmpModel=None):
+        super().__init__()
+        self.X('1',opAmpModel,'N001','VRef','VIn','Vgnd','VRef')
+        self.R('1','VIn','N001',kilo(100))
+        self.R('2','Vgnd','N001',kilo(100))
