@@ -15,7 +15,8 @@ from PySpiceDvTools.LTSpiceServer import enableLtSpice
 circuit = Circuit('Sensor Sim')
 circuit.Sinusoidal('1', 'A', circuit.gnd, amplitude=220, frequency=50)
 
-subcir= RlcNonLinearLoad(r=50,l=0.5,c=micro(10))
+#subcir= RlcNonLinearLoadFullSerie(r=50,l=.35,c=nano(35))
+subcir= RlcNonLinearLoadFullParallel(r=200,l=150,c=pico(200))
 circuit.subcircuit(subcir)
 circuit.X('1', subcir.name, 'A', circuit.gnd)
 

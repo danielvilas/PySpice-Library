@@ -69,3 +69,56 @@ class RlcNonLinearLoad(NonLinearLoad):
         self['C1'].capacitance=l
     def getCValue(self):
         return self['C1'].capacitance
+
+class RlcNonLinearLoadFullSerie(NonLinearLoad):
+    """Non Linear Load Subcircuit"""
+    __name__ = 'RlcNonLinearLoadFullSerie'
+
+    def __init__(self, r, l, c, 
+                 diodeModel=None
+             ):
+
+        super().__init__(diodeModel=diodeModel)
+        self.R('1','NPOS','N001',r)
+        self.L('1','N001','N002',l)
+        self.C('1','N002','NNEG',c)
+
+    def setRValue(self,r):
+        self['R1'].resistance=r
+    def getRValue(self):
+        return self['R1'].resistance
+    def setLValue(self,l):
+        self['L1'].inductance=l
+    def getLValue(self):
+        return self['L1'].inductance
+    def setCValue(self,c):
+        self['C1'].capacitance=l
+    def getCValue(self):
+        return self['C1'].capacitance
+
+
+class RlcNonLinearLoadFullParallel(NonLinearLoad):
+    """Non Linear Load Subcircuit"""
+    __name__ = 'RlcNonLinearLoadFullParallel'
+
+    def __init__(self, r, l, c, 
+                 diodeModel=None
+             ):
+
+        super().__init__(diodeModel=diodeModel)
+        self.R('1','NPOS','NNEG',r)
+        self.L('1','NPOS','NNEG',l)
+        self.C('1','NPOS','NNEG',c)
+
+    def setRValue(self,r):
+        self['R1'].resistance=r
+    def getRValue(self):
+        return self['R1'].resistance
+    def setLValue(self,l):
+        self['L1'].inductance=l
+    def getLValue(self):
+        return self['L1'].inductance
+    def setCValue(self,c):
+        self['C1'].capacitance=l
+    def getCValue(self):
+        return self['C1'].capacitance
