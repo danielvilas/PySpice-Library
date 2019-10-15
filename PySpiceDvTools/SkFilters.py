@@ -5,7 +5,7 @@ from PySpice.Spice.Netlist import SubCircuitFactory
 #logger = Logging.setup_logging()
 
 from PySpice.Spice.Netlist import Circuit
-from PySpice.Unit.Units import *
+from PySpice.Unit import *
 from PySpice.Spice.BasicElement import *
 from PySpice.Spice.HighLevelElement import *
 
@@ -98,10 +98,10 @@ class SKHighPassFilter(SubCircuitFactory):
             self._R4=R4
         if self.__name__==None:
             self.__name__=name
-            self.name = name
+            self._name = name
         if self.__name__==None:
             self.__name__='skhpfi'
-            self.name = name
+            self._name = name
     
         self.R('1','N001','Out',self._R1)
         self.R('2','N002','Ref',self._R2)
@@ -151,7 +151,7 @@ class SKHighPassFilterInverted(SKHighPassFilter):
         if name == None:
             name = 'skhpfi_{}_{}'.format(Fc,Gain)
         self.__name__= name
-        self.name = name
+        self._name = name
         self._calc_values()
         super().__init__(opAmpModel=opAmpModel)
 
@@ -191,10 +191,10 @@ class SKLowPassFilter(SubCircuitFactory):
             self._R4=R4
         if self.__name__==None:
             self.__name__=name
-            self.name = name
+            self._name = name
         if self.__name__==None:
             self.__name__='sklpfi'
-            self.name = name
+            self._name = name
 
         self.R('1','N001','In',self._R1)
         self.R('2','N002','N001',self._R2)
@@ -237,7 +237,7 @@ class SKLowPassFilterInverted(SKLowPassFilter):
         if name == None:
             name = 'sklpfi_{}_{}'.format(Fc,1)
         self.__name__= name
-        self.name = name
+        self._name = name
         self._calc_values()
         super().__init__(opAmpModel=opAmpModel)
 
@@ -261,7 +261,7 @@ class SKWideBandPassFilterInverted(SubCircuitFactory):
         if name == None:
             name = 'skwbpfi_{}_{}_{}'.format(Finf,Fsup,Gain)
         self.__name__= name
-        self.name = name
+        self._name = name
         self._lp=SKLowPassFilterInverted(opAmpModel=opAmpModel, R1=R1, R2=R2,Fc=Fsup)
         self._hp=SKHighPassFilterInverted(opAmpModel=opAmpModel,C=C,Fc=Finf)
         self.X('1',self._hp.name,'In','N001','Ref','V+','V-')

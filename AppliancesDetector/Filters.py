@@ -5,7 +5,7 @@ from PySpice.Spice.Netlist import SubCircuitFactory
 #logger = Logging.setup_logging()
 
 from PySpice.Spice.Netlist import Circuit
-from PySpice.Unit.Units import *
+from PySpice.Unit import *
 from PySpice.Spice.BasicElement import *
 from PySpice.Spice.HighLevelElement import *
 

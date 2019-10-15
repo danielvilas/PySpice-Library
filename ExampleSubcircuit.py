@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 #logger = Logging.setup_logging()
 
 from PySpice.Spice.Netlist import Circuit
-from PySpice.Unit.Units import *
+from PySpice.Unit import *
 from PySpice.Spice.BasicElement import *
 from PySpice.Spice.HighLevelElement import *
 from PySpice.Spice.Simulation import *
 from PySpiceDvTools.Loads import *
-from PySpiceDvTools.LTSpiceServer import enableLtSpice
+#from PySpiceDvTools.LTSpiceServer import enableLtSpice
 circuit = Circuit('NonLineal Load Sim')
 
 
@@ -25,7 +25,7 @@ L1 N002 N003 0.5
 .MODEL Def D
 '''
 
-circuit.Sinusoidal('1', 'A', circuit.gnd, amplitude=220, frequency=50)
+circuit.SinusoidalVoltageSource('1', 'A', circuit.gnd, amplitude=220, frequency=50)
 
 subcir= BasicNonLinearLoad(r=27.5,l=0.5)
 circuit.subcircuit(subcir)
@@ -40,13 +40,13 @@ print(subcir.getLValue())
 
 simulator = circuit.simulator()
 #enableLtSpice(simulator)
-analysis = simulator.transient(step_time='1ms', end_time='1s')
+analysis = simulator.transient(step_time=1@u_ms, end_time=1@u_s)
 
 current = analysis['V1']
-aimax = np.amax(current)
-aimin = np.amin(current)
-print ('Max Current: ',aimax.base)
-print ('Min Current: ',aimin.base)
+aimax = np.amax(current.data)
+aimin = np.amin(current.data)
+print ('Max Current: ',aimax)
+print ('Min Current: ',aimin)
 
 figure1 = plt.figure(1, (20, 10))
 plt.subplot(211)
@@ -70,15 +70,15 @@ for val in valsr:
     print(val)
     subcir.setLValue(0.5) 
     subcir.setRValue(val)
-    analysis = simulator.transient(step_time='1ms', end_time='1s')
+    analysis = simulator.transient(step_time=1@u_ms, end_time=1@u_s)
     current = analysis['V1']
-    max = np.amax(current)
+    max = np.amax(current.data)
     valsc05 = np.append(valsc05, max)
     subcir.setLValue(1) 
     subcir.setRValue(val)
-    analysis = simulator.transient(step_time='1ms', end_time='1s')
+    analysis = simulator.transient(step_time=1@u_ms, end_time=1@u_s)
     current = analysis['V1']
-    max = np.amax(current)
+    max = np.amax(current.data)
     valsc10 = np.append(valsc10, max)
 
 plt.subplot(212)

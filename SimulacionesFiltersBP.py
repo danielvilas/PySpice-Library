@@ -5,14 +5,14 @@ import matplotlib.pyplot as plt
 #logger = Logging.setup_logging()
 
 from PySpice.Spice.Netlist import Circuit
-from PySpice.Unit.Units import *
+from PySpice.Unit import *
 from PySpice.Spice.BasicElement import *
 from PySpice.Spice.HighLevelElement import *
 from PySpice.Spice.Simulation import *
 
 from PySpice.Plot.BodeDiagram import bode_diagram 
 
-from PySpiceDvTools.LTSpiceServer import enableLtSpice
+#from PySpiceDvTools.LTSpiceServer import enableLtSpice
 from PySpiceDvTools.Filters import *
 from AppliancesDetector.Filters import *
 
@@ -35,7 +35,7 @@ circuit.subcircuit(adder)
 
 circuit.V('1','5V',circuit.gnd,'5')
 circuit.V('2','VRef',circuit.gnd,'2.5')
-circuit.Sinusoidal('In', 'In', circuit.gnd, amplitude=1)
+circuit.SinusoidalVoltageSource('In', 'In', circuit.gnd, amplitude=1)
 circuit.X('1',filter50.name,'In','out50','VRef','5V',circuit.gnd)
 circuit.X('2',filter150.name,'In','out150','VRef','5V',circuit.gnd)
 circuit.X('3',filter250.name,'In','out250','VRef','5V',circuit.gnd)
@@ -47,9 +47,9 @@ print(circuit)
 _C=nano(100)
 
 simulator = circuit.simulator()
-enableLtSpice(simulator)
+#enableLtSpice(simulator)
 
-analysis = simulator.ac(start_frequency=10, stop_frequency=kilo(1), number_of_points=200,  variation='dec') 
+analysis = simulator.ac(start_frequency=10@u_Hz, stop_frequency=1@u_kHz, number_of_points=200,  variation='dec') 
 
 print('Simulated, Bode plotting...')
 

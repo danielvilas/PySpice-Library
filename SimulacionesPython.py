@@ -5,7 +5,7 @@ import PySpice.Logging.Logging as Logging
 logger = Logging.setup_logging()
 
 from PySpice.Spice.Netlist import Circuit
-from PySpice.Unit.Units import *
+from PySpice.Unit import *
 from PySpice.Spice.BasicElement import *
 from PySpice.Spice.HighLevelElement import *
 from PySpice.Spice.Simulation import *
@@ -24,7 +24,7 @@ L1 N002 N003 0.5
 .MODEL Def D
 '''
 
-circuit.Sinusoidal('1', 'A', circuit.gnd, amplitude=220, frequency=50)
+circuit.SinusoidalVoltageSource('1', 'A', circuit.gnd, amplitude=220, frequency=50)
 circuit.D('1',circuit.gnd,'N001', model='Def')
 circuit.D('2','A','N001',model='Def')
 circuit.D('3','N003','A',model='Def')
@@ -37,13 +37,13 @@ circuit.model('Def', 'D')
 print(circuit)
 
 simulator = circuit.simulator()
-analysis = simulator.transient(step_time='1ms', end_time='1s')
+analysis = simulator.transient(step_time=1@u_ms, end_time=1@u_s)
 
 current = analysis['V1']
-aimax = np.amax(current)
-aimin = np.amin(current)
-print ('Max Current: ',aimax.base)
-print ('Min Current: ',aimin.base)
+aimax = np.amax(current.data)
+aimin = np.amin(current.data)
+print ('Max Current: ',aimax)
+print ('Min Current: ',aimin)
 
 figure1 = plt.figure(1, (20, 10))
 plt.plot(analysis.time, current, '-')

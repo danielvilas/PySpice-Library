@@ -1,5 +1,5 @@
 from PySpice.Spice.Netlist import SubCircuitFactory
-from PySpice.Unit.Units import *
+from PySpice.Unit import *
 
 
 class NonLinearLoad(SubCircuitFactory):

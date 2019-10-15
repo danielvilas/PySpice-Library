@@ -5,14 +5,14 @@ import matplotlib.pyplot as plt
 #logger = Logging.setup_logging()
 
 from PySpice.Spice.Netlist import Circuit
-from PySpice.Unit.Units import *
+from PySpice.Unit import *
 from PySpice.Spice.BasicElement import *
 from PySpice.Spice.HighLevelElement import *
 from PySpice.Spice.Simulation import *
 
 from PySpice.Plot.BodeDiagram import bode_diagram 
 
-from PySpiceDvTools.LTSpiceServer import enableLtSpice
+#from PySpiceDvTools.LTSpiceServer import enableLtSpice
 from PySpiceDvTools.Filters import *
 from PySpiceDvTools.SkFilters import *
 #from AppliancesDetector.Filters import *
@@ -27,7 +27,7 @@ def createCircuit(filter1o,filter2o):
 
     circuit.V('1','5V',circuit.gnd,'5')
     circuit.V('2','VRef',circuit.gnd,'2.5')
-    circuit.Sinusoidal('In', 'In', 'VRef', amplitude=1)
+    circuit.SinusoidalVoltageSource('In', 'In', 'VRef', amplitude=1)
     circuit.X('1',filter1o.name,'In','out1o','VRef','5V',circuit.gnd)
     circuit.X('2',filter2o.name,'In','out2o','VRef','5V',circuit.gnd)
 
@@ -36,9 +36,9 @@ def createCircuit(filter1o,filter2o):
 
 def simulateAndPrint(figure1, ax1, ax2, circuit, fc0, fc1=None):
     simulator = circuit.simulator()
-    enableLtSpice(simulator, spice_command='/Applications/LTspice.app/Contents/MacOS/LTspice')
+ #   enableLtSpice(simulator, spice_command='/Applications/LTspice.app/Contents/MacOS/LTspice')
 
-    analysis = simulator.ac(start_frequency=10, stop_frequency=kilo(5), number_of_points=500,  variation='dec') 
+    analysis = simulator.ac(start_frequency=10@u_Hz, stop_frequency=5@u_kHz, number_of_points=500,  variation='dec') 
 
     print('Simulated, Bode plotting...')
 

@@ -5,15 +5,15 @@ import PySpice.Logging.Logging as Logging
 logger = Logging.setup_logging()
 
 from PySpice.Spice.Netlist import Circuit
-from PySpice.Unit.Units import *
+from PySpice.Unit import *
 from PySpice.Spice.BasicElement import *
 from PySpice.Spice.HighLevelElement import *
 from PySpice.Spice.Simulation import *
 from PySpiceDvTools.Loads import *
-from PySpiceDvTools.LTSpiceServer import enableLtSpice
+#from PySpiceDvTools.LTSpiceServer import enableLtSpice
 
 circuit = Circuit('Sensor Sim')
-circuit.Sinusoidal('1', 'A', circuit.gnd, amplitude=220, frequency=50)
+circuit.SinusoidalVoltageSource('1', 'A', circuit.gnd, amplitude=220, frequency=50)
 
 #subcir= RlcNonLinearLoadFullSerie(r=50,l=.35,c=nano(35))
 subcir= RlcNonLinearLoadFullParallel(r=200,l=150,c=pico(200))
@@ -27,13 +27,13 @@ simulator._options['maxord']='6'
 simulator._options['reltol']='0.1'
 simulator._options['pivrel']='0.1'
 simulator._options['abstol']='1e-10'
-analysis = simulator.transient(step_time='100us', end_time='5.2s', start_time='5s')
+analysis = simulator.transient(step_time=100@u_us, end_time=5.2@u_s, start_time=5@u_s)
 
 current = analysis['V1']
-aimax = np.amax(current)
-aimin = np.amin(current)
-print ('Max Current: ',aimax.base)
-print ('Min Current: ',aimin.base)
+aimax = np.amax(current.data)
+aimin = np.amin(current.data)
+print ('Max Current: ',aimax)
+print ('Min Current: ',aimin)
 
 figure1 = plt.figure(1, (20, 10))
 #plt.subplot(211)

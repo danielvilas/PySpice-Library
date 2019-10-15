@@ -5,11 +5,11 @@ import PySpice.Logging.Logging as Logging
 logger = Logging.setup_logging()
 
 from PySpice.Spice.Netlist import Circuit
-from PySpice.Unit.Units import *
+from PySpice.Unit import *
 from PySpice.Spice.BasicElement import *
 from PySpice.Spice.HighLevelElement import *
 from PySpice.Spice.Simulation import *
-from PySpiceDvTools.LTSpiceServer import *
+# from PySpiceDvTools.LTSpiceServer import *
 
 circuit = Circuit('NonLineal Load Sim')
 
@@ -25,7 +25,7 @@ L1 N002 N003 0.5
 .MODEL Def D
 '''
 
-circuit.Sinusoidal('1', 'A', circuit.gnd, amplitude=220, frequency=50)
+circuit.SinusoidalVoltageSource('1', 'A', circuit.gnd, amplitude=220, frequency=50)
 circuit.D('1',circuit.gnd,'N001', model='Def')
 circuit.D('2','A','N001',model='Def')
 circuit.D('3','N003','A',model='Def')
@@ -34,23 +34,27 @@ circuit.R('1','N001','N002',27.5)
 circuit.L('1','N002','N003',0.5)
 circuit.model('Def', 'D')
 
-
 print(circuit)
 
 simulator = circuit.simulator()
-simulator._options.pop('filetype')
-simulator._options.pop('NOINIT')
-simulator._spice_server= LtSpiceServer()
-analysis = simulator.transient(step_time='1ms', end_time='1s')
+#simulator._options.pop('filetype')
+#simulator._options.pop('NOINIT')
+#simulator._spice_server= LtSpiceServer()
+analysis = simulator.transient(step_time=1@u_ms, end_time=1@u_s)
+for node in analysis.nodes.values():
+    print('Node {}: V'.format(str(node)))
+for node in analysis.branches.values():
+    print('branch {} A'.format(str(node)))
+current = analysis.v1
+print(current.data)
+aimax = np.amax(current.data)
+aimin = np.amin(current.data)
 
-current = analysis['V1']
-aimax = np.amax(current)
-aimin = np.amin(current)
-print ('Max Current: ',aimax.base)
-print ('Min Current: ',aimin.base)
+print ('Max Current: ',aimax)
+print ('Min Current: ',aimin)
 
 figure1 = plt.figure(1, (20, 10))
-plt.plot(analysis.time, current, '-')
+plt.plot(analysis.time, current.data, '-')
 plt.grid()
 plt.title('Current')
 plt.xlabel('time')

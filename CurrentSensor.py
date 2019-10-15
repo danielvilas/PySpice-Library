@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 #logger = Logging.setup_logging()
 
 from PySpice.Spice.Netlist import Circuit
-from PySpice.Unit.Units import *
+from PySpice.Unit import *
 from PySpice.Spice.BasicElement import *
 from PySpice.Spice.HighLevelElement import *
 from PySpice.Spice.Simulation import *
 from PySpiceDvTools.Loads import *
-from PySpiceDvTools.LTSpiceServer import enableLtSpice
+#from PySpiceDvTools.LTSpiceServer import enableLtSpice
 from AppliancesDetector.Appliances import *
 from AppliancesDetector.Sonda import *
 from PySpiceDvTools.SkFilters import *
@@ -40,7 +40,7 @@ circuit.subcircuit(vRef)
 circuit.subcircuit(filter2o)
 filter2o.attach(circuit)
 
-circuit.Sinusoidal('1', 'A', circuit.gnd, amplitude=220, frequency=50)
+circuit.SinusoidalVoltageSource('1', 'A', circuit.gnd, amplitude=220, frequency=50)
 circuit.V('2','5V',circuit.gnd,'5')
 circuit.X('1', microwave.name, 'A', 'SIn')
 circuit.X('2', vRef.name, '5V', 'VRef',circuit.gnd)
@@ -49,14 +49,14 @@ circuit.X('4',filter2o.name,'VSense','VFilter','VRef','5V',circuit.gnd)
 
 print (circuit)
 simulator = circuit.simulator()
-enableLtSpice(simulator, spice_command='/Applications/LTspice.app/Contents/MacOS/LTspice')
-analysis = simulator.transient(step_time='1ms', end_time='1s')
+#enableLtSpice(simulator, spice_command='/Applications/LTspice.app/Contents/MacOS/LTspice')
+analysis = simulator.transient(step_time=1@u_ms, end_time=1@u_s)
 
 current = analysis['V1']
-aimax = np.amax(current)
-aimin = np.amin(current)
-print ('Max Current: ',aimax.base)
-print ('Min Current: ',aimin.base)
+aimax = np.amax(current.data)
+aimin = np.amin(current.data)
+print ('Max Current: ',aimax)
+print ('Min Current: ',aimin)
 
 figure1 = plt.figure(1, (20, 10))
 plt.subplot(321)

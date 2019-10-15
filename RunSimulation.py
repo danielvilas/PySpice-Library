@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 #logger = Logging.setup_logging()
 
 from PySpice.Spice.Netlist import Circuit
-from PySpice.Unit.Units import *
+from PySpice.Unit import *
 from PySpice.Spice.BasicElement import *
 from PySpice.Spice.HighLevelElement import *
 from PySpice.Spice.Simulation import *
@@ -14,7 +14,7 @@ from AppliancesDetector.Appliances import *
 from AppliancesDetector.Sonda import *
 
 circuit = Circuit('Sensor Sim')
-circuit.Sinusoidal('1', 'A', circuit.gnd, amplitude=220, frequency=50)
+circuit.SinusoidalVoltageSource('1', 'A', circuit.gnd, amplitude=220, frequency=50)
 
 subcir= MicroOndas1200()
 circuit.subcircuit(subcir)
@@ -25,13 +25,13 @@ circuit.X('2', subcir.name, 'SIn',circuit.gnd,'VSense',circuit.gnd)
 
 print (circuit)
 simulator = circuit.simulator()
-analysis = simulator.transient(step_time='1ms', end_time='1s')
+analysis = simulator.transient(step_time=1@u_ms, end_time=1@u_s)
 
 current = analysis['V1']
-aimax = np.amax(current)
-aimin = np.amin(current)
-print ('Max Current: ',aimax.base)
-print ('Min Current: ',aimin.base)
+aimax = np.amax(current.data)
+aimin = np.amin(current.data)
+print ('Max Current: ',aimax)
+print ('Min Current: ',aimin)
 
 figure1 = plt.figure(1, (20, 10))
 plt.subplot(211)

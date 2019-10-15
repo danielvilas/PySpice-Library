@@ -5,7 +5,7 @@ from PySpice.Spice.Netlist import SubCircuitFactory
 #logger = Logging.setup_logging()
 
 from PySpice.Spice.Netlist import Circuit
-from PySpice.Unit.Units import *
+from PySpice.Unit import *
 from PySpice.Spice.BasicElement import *
 from PySpice.Spice.HighLevelElement import *
 
@@ -54,7 +54,7 @@ class NarrowBandPassFilterInverted(SubCircuitFactory):
         if name == None:
             name = 'nbpfi_{}_{}_{}'.format(Fc,BW,Gain)
         self.__name__= name
-        self.name = name
+        self._name = name
         self._calc_values()
         self.X('1',opAmpModel,'Ref','N002','V+','V-','Out')
         self.C('1','N001','Out',self._C)
@@ -95,7 +95,7 @@ class HighPassFilterInverted(SubCircuitFactory):
         if name == None:
             name = 'hpfi_{}_{}'.format(Fc,Gain)
         self.__name__= name
-        self.name = name
+        self._name = name
         self._calc_values()
         self.X('1',opAmpModel,'Ref','N002','V+','V-','Out')
         self.C('1','N001','N002',self._C)
@@ -134,7 +134,7 @@ class LowPassFilterInverted(SubCircuitFactory):
         if name == None:
             name = 'lpfi_{}_{}'.format(Fc,Gain)
         self.__name__= name
-        self.name = name
+        self._name = name
         self._calc_values()
         self.X('1',opAmpModel,'Ref','N001','V+','V-','Out')
         self.C('1','N001','Out',self._C)
@@ -154,7 +154,8 @@ class CascadeFilter(SubCircuitFactory):
 
     def __init__(self, fa=None, fb=None, name=None):
         super().__init__()
-        self.name = name
+        self.__name__ = name
+        self._name=name
         
         self._fa=fa
         self._fb=fb
